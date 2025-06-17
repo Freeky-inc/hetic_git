@@ -40,7 +40,10 @@ def init_repo():
 
 def update_index(file_path, blob_hash):
     print("hello")
+    if not os.path.isfile(file_path):
+        print("le fichier n'existe pas")
 
+    # si le fichier existe, je vais sortir le h du fichier pour le comparer
 
 def add_file(file_path):
     with open(file_path, "rb") as f:
