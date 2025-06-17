@@ -38,6 +38,9 @@ def init_repo():
         f.write("ref: refs/heads/main\n")
     print("Dépôt initialisé.\nVous êtes dans la branche 'main'.")
 
+def update_index(file_path, blob_hash):
+    print("hello")
+
 def add_file(file_path):
     with open(file_path, "rb") as f:
         content = f.read()
@@ -46,7 +49,11 @@ def add_file(file_path):
 
     with open(blob_path, "wb") as f:
         f.write(content)
+
+    update_index(file_path, blob_hash)
     print(f"Fichier '{file_path}' ajouté (Blob: {blob_hash})")
+
+
 
 def commit_changes(message):
     # Créer un Tree (simplifié)
