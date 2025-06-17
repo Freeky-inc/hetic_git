@@ -41,6 +41,7 @@ def init_repo():
 def update_index(file_path, blob_hash):
     print("hello")
 
+
 def add_file(file_path):
     with open(file_path, "rb") as f:
         content = f.read()
