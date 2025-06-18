@@ -39,7 +39,6 @@ def init_repo():
     print("Dépôt initialisé.\nVous êtes dans la branche 'main'.")
 
 def update_index(file_path, blob_hash):
-    print("hello")
 
     index_path = ".fyt/index"
     if os.path.exists(index_path):
@@ -48,7 +47,10 @@ def update_index(file_path, blob_hash):
     else:
         index = {}
 
-    index[file_path] = blob_hash
+    rel_path = os.path.relpath(file_path, os.getcwd())
+    file_stat = os.stat(file_path)
+
+    index[rel_path] = blob_hash
     # Sauvegarder l'index
     with open(index_path, "w") as f:
         json.dump(index, f)
@@ -68,8 +70,16 @@ def add_file(file_path):
 
 
 def commit_changes(message):
+    index_path = ".fyt/index"
+    if not os.path.exists(index_path):
+        print("Rien à commit. Utilisez 'add' avant.")
+        return
+
+    # Charger l'index
+    with open(index_path, "r") as f:
+        index = json.load(f)
     # Créer un Tree (simplifié)
-    tree_data = {"files": []}  # En vrai, on stocke une structure de dossiers/fichiers
+    tree_data = {"files": list(index.items())}  # En vrai, on stocke une structure de dossiers/fichiers
     tree_json = json.dumps(tree_data).encode()
     tree_hash = hashlib.sha1(tree_json).hexdigest()
 
