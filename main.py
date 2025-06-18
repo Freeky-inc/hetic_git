@@ -40,10 +40,18 @@ def init_repo():
 
 def update_index(file_path, blob_hash):
     print("hello")
-    if not os.path.isfile(file_path):
-        print("le fichier n'existe pas")
 
-    # si le fichier existe, je vais sortir le h du fichier pour le comparer
+    index_path = ".fyt/index"
+    if os.path.exists(index_path):
+        with open(index_path, "r") as f:
+            index = json.load(f)
+    else:
+        index = {}
+
+    index[file_path] = blob_hash
+    # Sauvegarder l'index
+    with open(index_path, "w") as f:
+        json.dump(index, f)
 
 def add_file(file_path):
     with open(file_path, "rb") as f:
