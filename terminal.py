@@ -1,22 +1,27 @@
-#!/usr/bin/env python3
 import argparse
-import sys
-from ls_files import ls_files  # importe ta fonction ls_files
+from ls_files import ls_files
+from write_tree import write_tree
+from commit_tree import commit_tree
 
 parser = argparse.ArgumentParser()
-parser.add_argument(
-    "--force",
-    help="Hasher le fichier (uniquement pour hash-object)",
-    action="store_true"
-)
-# on autorise les arguments inconnus pour récupérer ls-files
-args, unknown = parser.parse_known_args()
+subparsers = parser.add_subparsers(dest="command")
 
-# Si la première "commande" inconnue est ls-files ou ls_files, on l’exécute
-if unknown and unknown[0] in ("ls-files", "ls_files"):
+# Sous-commande ls-files
+subparsers.add_parser("ls-files")
+
+# Sous-commande write-tree
+subparsers.add_parser("write-tree")
+
+commit_tree_parser = subparsers.add_parser("commit-tree")
+commit_tree_parser.add_argument("tree_sha", help="SHA1 du tree à committer")
+commit_tree_parser.add_argument("-m", required=True, help="message du commit")
+commit_tree_parser.add_argument("-p", help="SHA1 du commit parent (optionnel)")
+
+args = parser.parse_args()
+
+if args.command == "ls-files":
     ls_files()
-    sys.exit(0)
-# Sinon, on reste sur le comportement existant
-print(f"L'option de hashage a pour valeur {args.force}")
-
-
+elif args.command == "write-tree":
+    write_tree()
+elif args.command == "commit-tree":
+    commit_tree(args.tree_sha, args.m, args.p)
