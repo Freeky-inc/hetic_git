@@ -2,6 +2,7 @@ import argparse
 
 from functions.add import add_file
 from functions.commit import commit_changes
+from functions.cat_file import cat_file
 from functions.commit_tree import commit_tree
 from functions.init import init_repo
 from functions.ls_files import ls_files
@@ -15,6 +16,12 @@ subparsers = parser.add_subparsers(dest="command")
 # git add <file>
 parser_add = subparsers.add_parser("add", help="Ajoute un fichier à l'index")
 parser_add.add_argument("file", help="Fichier à ajouter")
+
+# git cat-file -t -p <hash>
+cat_file_parser = subparsers.add_parser("cat-file", help="Crée un tree à partir de l'index")
+cat_file_parser.add_argument("-t", action="store_true", help="Affiche le type de l'objet")
+cat_file_parser.add_argument("-p", action="store_true", help="Affiche le contenu de l'objet")
+cat_file_parser.add_argument("hash", help="Affiche l'ID de l'objet")
 
 # git commit -m "message"
 parser_commit = subparsers.add_parser("commit", help="Crée un commit")
@@ -46,6 +53,8 @@ if args.command == "add":
                         # Il faut passer par l'objet Blob pour ajouter le fichier    
 elif args.command == "commit":
     commit_changes(args.message)
+elif args.command == "cat-file":
+    cat_file(args.t, args.p, args.hash)
 elif args.command == "commit-tree":             # Faire en sorte que, si le hash du tree n'est 
     commit_tree(args.tree_sha, args.m, args.p)  # pas correct, on lève une erreur                                            
 elif args.command == "init":
