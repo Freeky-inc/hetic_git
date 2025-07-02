@@ -1,11 +1,12 @@
 import argparse
 
-from add import add_file
-from commit import commit_changes
-from commit_tree import commit_tree
-from init import init_repo
-from ls_files import ls_files
-from write_tree import write_tree
+from functions.add import add_file
+from functions.commit import commit_changes
+from functions.commit_tree import commit_tree
+from functions.init import init_repo
+from functions.ls_files import ls_files
+from functions.show_ref import show_ref
+from functions.write_tree import write_tree
 
 
 parser = argparse.ArgumentParser()
@@ -31,6 +32,9 @@ subparsers.add_parser("init", help="Initialise un dépôt")
 # git ls-files
 subparsers.add_parser("ls-files", help="Liste les fichiers dans l'index")
 
+#git show-ref
+subparsers.add_parser("show-ref", help="Affiche les références du dépôt")
+
 # git write-tree
 subparsers.add_parser("write-tree", help="Crée un tree à partir de l'index")
 
@@ -40,16 +44,17 @@ args = parser.parse_args()
 if args.command == "add":
     add_file(args.file) # Revoir la conception du fichier Blob. 
                         # Il faut passer par l'objet Blob pour ajouter le fichier    
-elif args.command == "commit": # Validé
+elif args.command == "commit":
     commit_changes(args.message)
-elif args.command == "commit-tree": # Faire en sorte que, si le hash du tree n'est 
-                                    # pas correct, on lève une erreur
-    commit_tree(args.tree_sha, args.m, args.p)
-elif args.command == "init": # Validé
+elif args.command == "commit-tree":             # Faire en sorte que, si le hash du tree n'est 
+    commit_tree(args.tree_sha, args.m, args.p)  # pas correct, on lève une erreur                                            
+elif args.command == "init":
     init_repo()
-elif args.command == "ls-files": # Fichier modifié, V2 validée
+elif args.command == "ls-files":
     ls_files()
-elif args.command == "write-tree": # Validé
+elif args.command == "show-ref":
+    show_ref()
+elif args.command == "write-tree":
     write_tree()
 else:
     parser.print_help()
