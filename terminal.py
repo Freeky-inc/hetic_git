@@ -6,6 +6,7 @@ from functions.cat_file import cat_file
 from functions.commit_tree import commit_tree
 from functions.init import init_repo
 from functions.ls_files import ls_files
+from functions.reset import reset
 from functions.rev_parse import rev_parse
 from functions.show_ref import show_ref
 from functions.write_tree import write_tree
@@ -40,6 +41,12 @@ subparsers.add_parser("init", help="Initialise un dépôt")
 # git ls-files
 subparsers.add_parser("ls-files", help="Liste les fichiers dans l'index")
 
+# git reset -soft -mixed -hard <sha>
+parser_reset = subparsers.add_parser("reset", help="Réinitialise l'index et le répertoire de travail")
+parser_reset.add_argument("-soft", action="store_true", help="Enlève les commits mais garde l'index et le répertoire de travail")
+parser_reset.add_argument("-mixed", action="store_true", help="Réinitialise l\'index mais pas le répertoire de travail")
+parser_reset.add_argument("-hard", action="store_true", help="Réinitialise l'index et le répertoire de travail")
+
 # git rev-parse <ref>
 parser_rev_parse = subparsers.add_parser("rev-parse", help="Convertit une référence Git en SHA1")
 parser_rev_parse.add_argument("ref", help="Référence Git à convertir en SHA1")
@@ -66,6 +73,8 @@ elif args.command == "init":
     init_repo()
 elif args.command == "ls-files":
     ls_files()
+elif args.command == "reset":
+    reset(args.soft, args.mixed, args.hard)
 elif args.command == "rev-parse":
     rev_parse(args.ref)
 elif args.command == "show-ref":
