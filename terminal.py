@@ -6,6 +6,7 @@ from functions.cat_file import cat_file
 from functions.commit_tree import commit_tree
 from functions.init import init_repo
 from functions.ls_files import ls_files
+from functions.rev_parse import rev_parse
 from functions.show_ref import show_ref
 from functions.write_tree import write_tree
 
@@ -39,6 +40,10 @@ subparsers.add_parser("init", help="Initialise un dépôt")
 # git ls-files
 subparsers.add_parser("ls-files", help="Liste les fichiers dans l'index")
 
+# git rev-parse <ref>
+parser_rev_parse = subparsers.add_parser("rev-parse", help="Convertit une référence Git en SHA1")
+parser_rev_parse.add_argument("ref", help="Référence Git à convertir en SHA1")
+
 #git show-ref
 subparsers.add_parser("show-ref", help="Affiche les références du dépôt")
 
@@ -61,6 +66,8 @@ elif args.command == "init":
     init_repo()
 elif args.command == "ls-files":
     ls_files()
+elif args.command == "rev-parse":
+    rev_parse(args.ref)
 elif args.command == "show-ref":
     show_ref()
 elif args.command == "write-tree":
