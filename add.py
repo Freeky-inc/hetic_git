@@ -36,6 +36,7 @@ def update_index(file_path, blob_hash):
 
 def status_all():
     index_path = ".fyt/index"
+    project_root = os.getcwd()
 
     if os.path.exists(index_path):
         with open(index_path, "r") as f:
@@ -46,12 +47,20 @@ def status_all():
     tracked_files = set(index.keys())
     working_dir_files = set()
 
-    for root, dirs, files in os.walk("."):
-        if root.startswith("./.fyt"):
+    for root, dirs, files in os.walk(project_root):
+        # Exclure les dossiers cachés et __pycache__
+        rel_root = os.path.relpath(root, project_root)
+        if rel_root == ".fyt" or rel_root.startswith(".fyt" + os.sep):
             continue
+        if rel_root.startswith(".git") or rel_root.startswith("__pycache__") or rel_root.startswith("Objects" + os.sep + "__pycache__"):
+            continue
+        # Exclure tous les dossiers cachés
+        dirs[:] = [d for d in dirs if not d.startswith('.') and d != '__pycache__']
         for file in files:
+            if file.startswith('.') or file.endswith('.pyc'):
+                continue
             path = os.path.join(root, file)
-            rel_path = os.path.relpath(path, os.getcwd())
+            rel_path = os.path.relpath(path, project_root)
             working_dir_files.add(rel_path)
 
             with open(path, "rb") as f:

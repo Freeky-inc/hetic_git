@@ -1,6 +1,6 @@
 import argparse
 
-from add import add_file
+from add import add_file, status_all
 from commit import commit_changes
 from commit_tree import commit_tree
 from init import init_repo
@@ -31,6 +31,9 @@ subparsers.add_parser("init", help="Initialise un dépôt")
 # git ls-files
 subparsers.add_parser("ls-files", help="Liste les fichiers dans l'index")
 
+# git status-all
+status_parser = subparsers.add_parser("status-all", help="Affiche le statut de tous les fichiers")
+
 # git write-tree
 subparsers.add_parser("write-tree", help="Crée un tree à partir de l'index")
 
@@ -49,6 +52,8 @@ elif args.command == "init": # Validé
     init_repo()
 elif args.command == "ls-files": # Fichier modifié, V2 validée
     ls_files()
+elif args.command == "status-all": # Fichier modifié, V2 validée
+    status_all()
 elif args.command == "write-tree": # Validé
     write_tree()
 else:
