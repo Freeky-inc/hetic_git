@@ -40,6 +40,7 @@ subparsers.add_parser("init", help="Initialise un dépôt")
 
 # git ls-files
 subparsers.add_parser("ls-files", help="Liste les fichiers dans l'index")
+
 # git reset -soft -mixed -hard <sha>
 parser_reset = subparsers.add_parser("reset", help="Réinitialise l'index et le répertoire de travail")
 parser_reset.add_argument("-soft", action="store_true", help="Enlève les commits mais garde l'index et le répertoire de travail")
