@@ -6,6 +6,7 @@ from functions.cat_file import cat_file
 from functions.commit_tree import commit_tree
 from functions.init import init_repo
 from functions.ls_files import ls_files
+from functions.ls_tree import ls_tree
 from functions.reset import reset
 from functions.rev_parse import rev_parse
 from functions.show_ref import show_ref
@@ -41,6 +42,10 @@ subparsers.add_parser("init", help="Initialise un dépôt")
 # git ls-files
 subparsers.add_parser("ls-files", help="Liste les fichiers dans l'index")
 
+# git ls-tree <tree_sha>
+tree_parser = subparsers.add_parser("ls-tree", help="Liste les fichiers dans un tree")
+tree_parser.add_argument("tree_sha", help="SHA1 du tree à lister")
+
 # git reset -soft -mixed -hard <sha>
 parser_reset = subparsers.add_parser("reset", help="Réinitialise l'index et le répertoire de travail")
 parser_reset.add_argument("-soft", action="store_true", help="Enlève les commits mais garde l'index et le répertoire de travail")
@@ -75,6 +80,8 @@ elif args.command == "init":
     init_repo()
 elif args.command == "ls-files":
     ls_files()
+elif args.command == "ls-tree":
+    ls_tree(args.tree_sha)    
 elif args.command == "reset":
     reset(args.soft, args.mixed, args.hard)
 elif args.command == "rev-parse":
