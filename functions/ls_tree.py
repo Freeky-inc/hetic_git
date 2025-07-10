@@ -21,12 +21,8 @@ def ls_tree(tree_sha):
         if not content:
             print("Tree vide.")
             return
-        try:
-            tree_data = json.loads(content)
-        except Exception:
-            print("Format de tree invalide : contenu brut :\n" + content)
-            return
-    # Format attendu : {"files": [["chemin", "sha"], ...]}
+        
+        tree_data = json.loads(content)
     if isinstance(tree_data, dict) and "files" in tree_data:
         for file_path, sha in tree_data["files"]:
             print(f"100644 blob {sha}\t{file_path}")
