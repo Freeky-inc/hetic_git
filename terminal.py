@@ -1,6 +1,6 @@
 import argparse
 
-from functions.add import add_file
+from functions.add import add_file, status_all
 from functions.commit import commit_changes
 from functions.cat_file import cat_file
 from functions.commit_tree import commit_tree
@@ -40,7 +40,6 @@ subparsers.add_parser("init", help="Initialise un dépôt")
 
 # git ls-files
 subparsers.add_parser("ls-files", help="Liste les fichiers dans l'index")
-
 # git reset -soft -mixed -hard <sha>
 parser_reset = subparsers.add_parser("reset", help="Réinitialise l'index et le répertoire de travail")
 parser_reset.add_argument("-soft", action="store_true", help="Enlève les commits mais garde l'index et le répertoire de travail")
@@ -50,6 +49,9 @@ parser_reset.add_argument("-hard", action="store_true", help="Réinitialise l'in
 # git rev-parse <ref>
 parser_rev_parse = subparsers.add_parser("rev-parse", help="Convertit une référence Git en SHA1")
 parser_rev_parse.add_argument("ref", help="Référence Git à convertir en SHA1")
+
+# git status-all
+status_parser = subparsers.add_parser("status-all", help="Affiche le statut de tous les fichiers")
 
 #git show-ref
 subparsers.add_parser("show-ref", help="Affiche les références du dépôt")
@@ -61,14 +63,13 @@ args = parser.parse_args()
 
 
 if args.command == "add":
-    add_file(args.file) # Revoir la conception du fichier Blob. 
-                        # Il faut passer par l'objet Blob pour ajouter le fichier    
+    add_file(args.file)   
 elif args.command == "commit":
     commit_changes(args.message)
 elif args.command == "cat-file":
     cat_file(args.t, args.p, args.hash)
-elif args.command == "commit-tree":             # Faire en sorte que, si le hash du tree n'est 
-    commit_tree(args.tree_sha, args.m, args.p)  # pas correct, on lève une erreur                                            
+elif args.command == "commit-tree":
+    commit_tree(args.tree_sha, args.m, args.p)                                    
 elif args.command == "init":
     init_repo()
 elif args.command == "ls-files":
@@ -77,6 +78,8 @@ elif args.command == "reset":
     reset(args.soft, args.mixed, args.hard)
 elif args.command == "rev-parse":
     rev_parse(args.ref)
+elif args.command == "status-all":
+    status_all()
 elif args.command == "show-ref":
     show_ref()
 elif args.command == "write-tree":

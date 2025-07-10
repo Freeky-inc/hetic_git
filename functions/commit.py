@@ -41,3 +41,5 @@ def commit_changes(message):
         f.write(commit_hash)
 
     print(f"Commit [{commit_hash[:6]}]: {message}")
+
+    # git status
