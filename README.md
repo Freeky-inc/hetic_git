@@ -10,7 +10,7 @@ You will implement a subset of Git commands, both low-level (plumbing) and user-
 
 ## 🛠 Plumbing Commands
 
-### `git hash-object <file>`
+### `git hash-object [-w] <file>`
 - **Creates a blob** object from file content and writes its SHA-1 to stdout.
 - ❌ Reject directories or missing files.
 

@@ -5,6 +5,7 @@ from functions.commit import commit_changes
 from functions.cat_file import cat_file
 from functions.commit_tree import commit_tree
 from functions.init import init_repo
+from functions.log import log
 from functions.ls_files import ls_files
 from functions.ls_tree import ls_tree
 from functions.reset import reset
@@ -38,6 +39,9 @@ commit_tree_parser.add_argument("-p", help="SHA1 du commit parent (optionnel)")
 
 # git init
 subparsers.add_parser("init", help="Initialise un dépôt")
+
+# git log
+subparsers.add_parser("log", help="Affiche l'historique des commits")
 
 # git ls-files
 subparsers.add_parser("ls-files", help="Liste les fichiers dans l'index")
@@ -78,6 +82,8 @@ elif args.command == "commit-tree":
     commit_tree(args.tree_sha, args.m, args.p)                                    
 elif args.command == "init":
     init_repo()
+elif args.command == "log":
+    log()
 elif args.command == "ls-files":
     ls_files()
 elif args.command == "ls-tree":
