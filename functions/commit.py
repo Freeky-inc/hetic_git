@@ -36,9 +36,17 @@ def commit_changes(message):
     with open(f".fyt/objects/commit/{commit_hash}", "wb") as f:
         f.write(commit_json)
 
-    # Mettre à jour la référence (branche)
-    with open(".fyt/refs/heads/main", "w") as f:
-        f.write(commit_hash)
+    # Mettre à jour la référence (branche courante)
+    with open(".fyt/HEAD", "r") as f:
+        ref = f.read().strip()
+    if ref.startswith("ref:"):
+        ref_path = os.path.join(".fyt", ref.split(" ", 1)[1])
+        with open(ref_path, "w") as f:
+            f.write(commit_hash)
+    else:
+        # HEAD détaché, écriture directe
+        with open(".fyt/HEAD", "w") as f:
+            f.write(commit_hash)
 
     print(f"Commit [{commit_hash[:6]}]: {message}")
 

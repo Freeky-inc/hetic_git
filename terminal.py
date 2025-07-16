@@ -3,6 +3,7 @@ import argparse
 from functions.add import add_file, status_all
 from functions.commit import commit_changes
 from functions.cat_file import cat_file
+from functions.checkout import checkout
 from functions.commit_tree import commit_tree
 from functions.init import init_repo
 from functions.log import log
@@ -26,6 +27,11 @@ cat_file_parser = subparsers.add_parser("cat-file", help="Crée un tree à parti
 cat_file_parser.add_argument("-t", action="store_true", help="Affiche le type de l'objet")
 cat_file_parser.add_argument("-p", action="store_true", help="Affiche le contenu de l'objet")
 cat_file_parser.add_argument("hash", help="Affiche l'ID de l'objet")
+
+# git checkout -b <branch>
+checkout_parser = subparsers.add_parser("checkout", help="Change de branche")
+checkout_parser.add_argument("-b", action="store_true", help="Crée une nouvelle branche")
+checkout_parser.add_argument("branch", help="Branche à laquelle se déplacer")
 
 # git commit -m "message"
 parser_commit = subparsers.add_parser("commit", help="Crée un commit")
@@ -78,6 +84,8 @@ elif args.command == "commit":
     commit_changes(args.message)
 elif args.command == "cat-file":
     cat_file(args.t, args.p, args.hash)
+elif args.command == "checkout":
+    checkout(args.b, args.branch)
 elif args.command == "commit-tree":
     commit_tree(args.tree_sha, args.m, args.p)                                    
 elif args.command == "init":
