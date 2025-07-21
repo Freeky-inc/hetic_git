@@ -11,6 +11,7 @@ from functions.ls_files import ls_files
 from functions.ls_tree import ls_tree
 from functions.reset import reset
 from functions.rev_parse import rev_parse
+from functions.rm import fyt_rm
 from functions.show_ref import show_ref
 from functions.write_tree import write_tree
 
@@ -75,6 +76,11 @@ subparsers.add_parser("show-ref", help="Affiche les références du dépôt")
 # git write-tree
 subparsers.add_parser("write-tree", help="Crée un tree à partir de l'index")
 
+# git remove <file>
+parser_remove = subparsers.add_parser("remove", help="Supprime un fichier du répertoire de travail")
+parser_remove.add_argument("file", help="Fichier à supprimer")
+
+
 args = parser.parse_args()
 
 
@@ -105,6 +111,12 @@ elif args.command == "status-all":
 elif args.command == "show-ref":
     show_ref()
 elif args.command == "write-tree":
-    write_tree()
+    write_tree()Z
+elif args.command == "rm":
+    if args.file:
+        fyt_rm(args.file)
+    else:
+        print("Erreur : vous devez fournir un nom de fichier.")
+
 else:
     parser.print_help()
