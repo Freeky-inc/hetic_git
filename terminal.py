@@ -111,7 +111,7 @@ elif args.command == "status-all":
 elif args.command == "show-ref":
     show_ref()
 elif args.command == "write-tree":
-    write_tree()Z
+    write_tree()
 elif args.command == "rm":
     if args.file:
         fyt_rm(args.file)
