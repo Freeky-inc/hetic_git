@@ -9,29 +9,29 @@ class Tree:
 
         files = []
         subtrees_done = set()
+        root_parts = os.path.normpath(root).split(os.sep)
 
         for rel_path, blob_hash in index.items():
-            # On ne prend que les fichiers dans le dossier courant ou ses sous-dossiers
             if ".fyt" in rel_path.split(os.sep):
                 continue
             parts = rel_path.split(os.sep)
             # Fichier direct du dossier courant
-            if len(parts) == 2 and parts[0] == os.path.basename(root):
+            if parts[:len(root_parts)] == root_parts and len(parts) == len(root_parts) + 1:
                 files.append([rel_path, blob_hash])
-            # Fichier dans un sous-dossier
-            elif len(parts) > 2 and parts[0] == os.path.basename(root):
-                subdir = os.path.join(root, parts[1])
-                if subdir not in subtrees_done:
+            # Fichier dans un sous-dossier direct
+            elif parts[:len(root_parts)] == root_parts and len(parts) > len(root_parts) + 1:
+                subdir = os.path.join(*parts[:len(root_parts)+1])
+                subdir_full = os.path.join(*root_parts, parts[len(root_parts)])
+                if subdir_full not in subtrees_done:
                     subtree = Tree()
-                    subtree.setTree(subdir)
-                    files.append([subdir, subtree.sha1])
-                    subtrees_done.add(subdir)
+                    subtree.setTree(subdir_full)
+                    files.append([subdir_full, subtree.sha1])
+                    subtrees_done.add(subdir_full)
 
         tree_data = {"files": files}
         tree_json = json.dumps(tree_data).encode("utf-8")
         self.sha1 = hashlib.sha1(tree_json).hexdigest()
         self.files = files
-
 
         dir_path = "projet-test/.fyt/objects/tree/"
         os.makedirs(dir_path, exist_ok=True)
