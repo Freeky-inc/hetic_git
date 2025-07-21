@@ -2,10 +2,24 @@ import os
 import json
 import hashlib
 
+from functions.write_tree import write_tree
+
 def add_file(file_path):
+    if os.path.isdir(file_path):
+        write_tree()
+        if os.path.isdir(file_path):
+
+            for root, dirs, files in os.walk(file_path):
+                for file in files:
+                    file_path = os.path.join(root, file)
+                    add_file(file_path)
+
+        return
+
     with open(file_path, "rb") as f:
         content = f.read()
-    blob_hash = hashlib.sha1(content).hexdigest()
+    data_to_hash = file_path.encode() + b"\0" + content
+    blob_hash = hashlib.sha1(data_to_hash).hexdigest()
     blob_dir = ".fyt/objects/blob"
     os.makedirs(blob_dir, exist_ok=True)
     blob_path = os.path.join(blob_dir, blob_hash)
@@ -15,6 +29,8 @@ def add_file(file_path):
 
     update_index(file_path, blob_hash)
     print(f"Fichier '{file_path}' ajouté (Blob: {blob_hash})")
+
+        
 
 def update_index(file_path, blob_hash):
     index_path = ".fyt/index"

@@ -9,9 +9,8 @@ def checkout(b, branch_or_sha):
         return
 
     ref = branch_or_sha
-    # Création d'une nouvelle branche si -b
+    # Création d'une nouvelle branche si l'argument -b est présent
     if b:
-        # HEAD doit pointer sur le commit courant
         with open('.fyt/HEAD', 'r') as f:
             current_ref = f.read().strip()
         if current_ref.startswith('ref:'):
