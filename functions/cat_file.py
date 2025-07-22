@@ -1,6 +1,17 @@
 import os
 import json
 
+# 100644 = fichier normal
+
+# 100755 = fichier exécutable
+
+# 040000 = dossier (répertoire Git = tree)
+
+def exec(nom_fichier):
+    extensions_exec = {'.exe', '.bat', '.cmd', '.sh', '.bin', '.py', '.pl', '.rb', '.jar'}
+    _, ext = os.path.splitext(nom_fichier.lower())
+    return ext in extensions_exec
+
 def cat_file(t, prettier, hash_id):
     # Recherche dans les dossiers d'objets possibles
     object_dirs = [
@@ -25,13 +36,30 @@ def cat_file(t, prettier, hash_id):
                     print("unknown")
             # Affiche le contenu si demandé
             if prettier:
+                if os.path.isdir(file_path):
+                    donnees = "040000"
+                elif exec(file_path):
+                    donnees = "100755"
+                else:
+                    donnees = "100644"
+
+                if "blob" in obj_dir:
+                    donnees += " blob"
+                elif "tree" in obj_dir:
+                    donnees += " tree"
+                elif "commit" in obj_dir:
+                    donnees += " commit"
+
+                print(f"{donnees} {hash_id} {os.path.basename(file_path)}")
+
+
                 with open(file_path, "rb") as f:
                     try:
                         content = f.read().decode("utf-8")
                         # Si c'est du JSON, affiche joliment
                         try:
                             data = json.loads(content)
-                            print(json.dumps(data, indent=2, ensure_ascii=False))
+                            print(json.dumps(data, indent=1))
                         except Exception:
                             print(content)
                     except Exception:

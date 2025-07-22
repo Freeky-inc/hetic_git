@@ -20,7 +20,10 @@ def add_file(file_path):
     data_to_hash = file_path.encode() + b"\0" + content
     blob_hash = hashlib.sha1(data_to_hash).hexdigest()
     blob_dir = "projet-test/.fyt/objects/blob"
-    os.makedirs(blob_dir, exist_ok=True)
+    if not os.makedirs(blob_dir) :
+        print(f"Veuillez initialiser le projet avec 'init' avant d'ajouter des fichiers.")
+        
+        return
     blob_path = os.path.join(blob_dir, blob_hash)
 
     with open(blob_path, "wb") as f:
