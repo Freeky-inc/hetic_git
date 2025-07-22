@@ -13,7 +13,7 @@ from functions.reset import reset
 from functions.rev_parse import rev_parse
 from functions.show_ref import show_ref
 from functions.write_tree import write_tree
-
+from functions.merge import merge
 
 parser = argparse.ArgumentParser()
 subparsers = parser.add_subparsers(dest="command")
@@ -56,6 +56,11 @@ subparsers.add_parser("ls-files", help="Liste les fichiers dans l'index")
 tree_parser = subparsers.add_parser("ls-tree", help="Liste les fichiers dans un tree")
 tree_parser.add_argument("tree_sha", help="SHA1 du tree à lister")
 
+# git merge <branch1> <branch2>
+merge_parser = subparsers.add_parser("merge", help="Fusionne deux branches")
+merge_parser.add_argument("branch1", help="Première branche à fusionner")
+merge_parser.add_argument("branch2", help="Deuxième branche à fusionner")
+
 # git reset -soft -mixed -hard <sha>
 parser_reset = subparsers.add_parser("reset", help="Réinitialise l'index et le répertoire de travail")
 parser_reset.add_argument("-soft", action="store_true", help="Enlève les commits mais garde l'index et le répertoire de travail")
@@ -96,6 +101,8 @@ elif args.command == "ls-files":
     ls_files()
 elif args.command == "ls-tree":
     ls_tree(args.tree_sha)    
+elif args.command == "merge":
+    merge(args.branch1, args.branch2)    
 elif args.command == "reset":
     reset(args.soft, args.mixed, args.hard)
 elif args.command == "rev-parse":
