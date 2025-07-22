@@ -3,8 +3,8 @@ import os
 
 def rev_parse(ref):
     # 1. HEAD (fichier spécial)
-    if ref == "HEAD" and os.path.exists(".fyt/HEAD"):
-        with open(".fyt/HEAD", "r") as f:
+    if ref == "HEAD" and os.path.exists("projet-test/.fyt/HEAD"):
+        with open("projet-test/.fyt/HEAD", "r") as f:
             head_content = f.read().strip()
         if head_content.startswith("ref:"):
             # Résout la ref HEAD récursivement
@@ -18,7 +18,7 @@ def rev_parse(ref):
             return
 
     # 2. refs (branche ou tag, y compris sous-dossiers)
-    refs_root = ".fyt/refs"
+    refs_root = "projet-test/.fyt/refs"
     if os.path.exists(refs_root):
         for root, _, files in os.walk(refs_root):
             for file in files:
@@ -31,9 +31,9 @@ def rev_parse(ref):
 
     # 3. objets (commit/tree/blob) et recherche par préfixe
     object_dirs = [
-        ".fyt/objects/commit",
-        ".fyt/objects/tree",
-        ".fyt/objects/blob"
+        "projet-test/.fyt/objects/commit",
+        "projet-test/.fyt/objects/tree",
+        "projet-test/.fyt/objects/blob"
     ]
     possible_matches = []
     for obj_dir in object_dirs:
@@ -52,7 +52,7 @@ def rev_parse(ref):
         return
 
     # 4. index (blobs)
-    index_path = ".fyt/index"
+    index_path = "projet-test/.fyt/index"
     if os.path.exists(index_path):
         with open(index_path, "r", encoding="utf-8") as f:
             index = json.load(f)

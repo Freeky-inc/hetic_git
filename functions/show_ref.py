@@ -2,7 +2,7 @@ import json
 import os
 
 def show_ref():
-    index_path = ".fyt/index"
+    index_path = "projet-test/.fyt/index"
     if not os.path.exists(index_path):
         print("Aucune référence trouvée.")
         return

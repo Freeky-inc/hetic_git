@@ -14,7 +14,7 @@ from functions.rev_parse import rev_parse
 from functions.show_ref import show_ref
 from functions.write_tree import write_tree
 from functions.merge import merge
-
+é
 parser = argparse.ArgumentParser()
 subparsers = parser.add_subparsers(dest="command")
 
