@@ -13,7 +13,7 @@ def add_file(file_path):
                 if ".fyt" in os.path.relpath(full_path, file_path).split(os.sep):
                     continue
                 add_file(full_path)
-        write_tree()
+        # write_tree()
         return
 
     with open(file_path, "rb") as f:
