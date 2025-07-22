@@ -4,7 +4,7 @@ import hashlib
 import datetime
 
 def commit_changes(message):
-    index_path = ".fyt/index"
+    index_path = "projet-test/.fyt/index"
     if not os.path.exists(index_path):
         print("Rien à commit. Utilisez 'add' avant.")
         return
@@ -17,9 +17,9 @@ def commit_changes(message):
     tree_json = json.dumps(tree_data).encode()
     tree_hash = hashlib.sha1(tree_json).hexdigest()
 
-    os.makedirs(".fyt/objects/tree", exist_ok=True)
+    os.makedirs("projet-test/.fyt/objects/tree", exist_ok=True)
 
-    with open(f".fyt/objects/tree/{tree_hash}", "wb") as f:
+    with open(f"projet-test/.fyt/objects/tree/{tree_hash}", "wb") as f:
         f.write(tree_json)
 
     # Créer un Commit
@@ -31,13 +31,23 @@ def commit_changes(message):
     commit_json = json.dumps(commit_data).encode()
     commit_hash = hashlib.sha1(commit_json).hexdigest()
 
-    os.makedirs(".fyt/objects/commit", exist_ok=True)
+    os.makedirs("projet-test/.fyt/objects/commit", exist_ok=True)
 
-    with open(f".fyt/objects/commit/{commit_hash}", "wb") as f:
+    with open(f"projet-test/.fyt/objects/commit/{commit_hash}", "wb") as f:
         f.write(commit_json)
 
-    # Mettre à jour la référence (branche)
-    with open(".fyt/refs/heads/main", "w") as f:
-        f.write(commit_hash)
+    # Mettre à jour la référence (branche courante)
+    with open("projet-test/.fyt/HEAD", "r") as f:
+        ref = f.read().strip()
+    if ref.startswith("ref:"):
+        ref_path = os.path.join("projet-test/.fyt", ref.split(" ", 1)[1])
+        with open(ref_path, "w") as f:
+            f.write(commit_hash)
+    else:
+        # HEAD détaché, écriture directe
+        with open("projet-test/.fyt/HEAD", "w") as f:
+            f.write(commit_hash)
 
     print(f"Commit [{commit_hash[:6]}]: {message}")
+
+    # git status

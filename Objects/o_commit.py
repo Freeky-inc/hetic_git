@@ -23,7 +23,7 @@ class Commit:
         if parent_sha1:
             commit_data["parent"] = parent_sha1
 
-        dir_path = ".fyt/objects/commit"
+        dir_path = "projet-test/.fyt/objects/commit"
         file_path = os.path.join(dir_path, self.sha1)
         if os.path.exists(file_path):
             with open(file_path, "r") as f:
