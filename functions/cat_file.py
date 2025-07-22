@@ -4,9 +4,9 @@ import json
 def cat_file(t, prettier, hash_id):
     # Recherche dans les dossiers d'objets possibles
     object_dirs = [
-        ".fyt/objects/blob",
-        ".fyt/objects/tree",
-        ".fyt/objects/commit"
+        "projet-test/.fyt/objects/blob",
+        "projet-test/.fyt/objects/tree",
+        "projet-test/.fyt/objects/commit"
     ]
     found = False
     for obj_dir in object_dirs:

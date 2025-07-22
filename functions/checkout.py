@@ -4,47 +4,46 @@ import sys
 
 def checkout(b, branch_or_sha):
     # Vérifier le dépôt
-    if not os.path.exists('.fyt'):
+    if not os.path.exists('projet-test/.fyt'):
         print("Aucun dépôt Fyt trouvé.")
         return
 
     ref = branch_or_sha
-    # Création d'une nouvelle branche si -b
+    # Création d'une nouvelle branche si l'argument -b est présent
     if b:
-        # HEAD doit pointer sur le commit courant
-        with open('.fyt/HEAD', 'r') as f:
+        with open('projet-test/.fyt/HEAD', 'r') as f:
             current_ref = f.read().strip()
         if current_ref.startswith('ref:'):
             current_ref = current_ref.split(' ')[1]
-            current_commit_file = os.path.join('.fyt', current_ref)
+            current_commit_file = os.path.join('projet-test/.fyt', current_ref)
             with open(current_commit_file, 'r') as f:
                 current_commit_sha = f.readlines()[-1].split()[0]
         else:
             current_commit_sha = current_ref
         # Créer la branche
-        ref_path = os.path.join('.fyt', 'refs', 'heads', ref)
+        ref_path = os.path.join('projet-test/.fyt', 'refs', 'heads', ref)
         with open(ref_path, 'w') as f:
             f.write(current_commit_sha)
         print(f"Branche '{ref}' créée sur {current_commit_sha}.")
         # HEAD sur la nouvelle branche
-        with open('.fyt/HEAD', 'w') as f:
+        with open('projet-test/.fyt/HEAD', 'w') as f:
             f.write(f"ref: refs/heads/{ref}")
         commit_sha = current_commit_sha
     else:
         # Changement de branche ou commit
-        ref_path = os.path.join('.fyt', 'refs', 'heads', ref)
+        ref_path = os.path.join('projet-test/.fyt', 'refs', 'heads', ref)
         if os.path.exists(ref_path):
             with open(ref_path, 'r') as f:
                 commit_sha = f.read().strip()
-            with open('.fyt/HEAD', 'w') as f:
+            with open('projet-test/.fyt/HEAD', 'w') as f:
                 f.write(f"ref: refs/heads/{ref}")
         else:
             commit_sha = ref
-            with open('.fyt/HEAD', 'w') as f:
+            with open('projet-test/.fyt/HEAD', 'w') as f:
                 f.write(commit_sha)
 
     # Charger le commit
-    commit_path = os.path.join('.fyt', 'commits', commit_sha)
+    commit_path = os.path.join('projet-test/.fyt', 'commits', commit_sha)
     if not os.path.exists(commit_path):
         print(f"Commit {commit_sha} introuvable.")
         return
@@ -53,7 +52,7 @@ def checkout(b, branch_or_sha):
 
     # Restaurer les fichiers du commit avec gestion des conflits
     for file_path, blob_sha in commit_data.items():
-        blob_path = os.path.join('.fyt', 'objects', 'blob', blob_sha)
+        blob_path = os.path.join('projet-test/.fyt', 'objects', 'blob', blob_sha)
         if not os.path.exists(blob_path):
             print(f"Blob {blob_sha} manquant pour {file_path}.")
             continue

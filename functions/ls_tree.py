@@ -5,7 +5,7 @@ import json
 def find_fyt_dir(path):
     prev = None
     while path != prev:
-        dot = os.path.join(path, ".fyt")
+        dot = os.path.join(path, "projet-test/.fyt")
         if os.path.isdir(dot):
             return dot
         prev, path = path, os.path.dirname(path)
