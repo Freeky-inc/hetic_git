@@ -4,23 +4,28 @@ import json
 import hashlib
 import datetime
 
+# Récupère le hash du dernier commit d’une branche donnée.
 
 def get_branch_commit(branch):
-    ref_path = os.path.join(".fyt", "refs", "heads", branch)
+    ref_path = os.path.join("projet-test", ".fyt", "refs", "heads", branch)
     if not os.path.exists(ref_path):
         print(f"Branche {branch} introuvable.")
         return None
     with open(ref_path, "r") as f:
         return f.read().strip()
 
+# Récupère le(s) parent(s) d’un commit.
+
 def get_commit_parents(commit_sha):
-    commit_path = os.path.join(".fyt", "objects", "commit", commit_sha)
+    commit_path = os.path.join("projet-test", ".fyt", "objects", "commit", commit_sha)
     if not os.path.exists(commit_path):
         return []
     with open(commit_path, "rb") as f:
         data = json.load(f)
-    parent = data.get("parent")
-    return [parent] if parent else []
+    parents = data.get("parents", [])
+    return parents if parents else []
+
+# Récupère tous les ancêtres d’un commit (pour trouver un ancêtre commun lors d’un merge).
 
 def get_ancestors(commit_sha):
     ancestors = set()
@@ -32,6 +37,8 @@ def get_ancestors(commit_sha):
             stack.extend(get_commit_parents(sha))
     return ancestors
 
+# Trouve l’ancêtre commun le plus proche entre deux commits (base du merge).
+
 def find_common_ancestor(sha1, sha2):
     ancestors1 = get_ancestors(sha1)
     stack = [sha2]
@@ -41,6 +48,8 @@ def find_common_ancestor(sha1, sha2):
             return sha
         stack.extend(get_commit_parents(sha))
     return None
+
+# Effectue la fusion entre deux branches.
 
 def merge(branch1, branch2):
     sha1 = get_branch_commit(branch1)
@@ -56,7 +65,7 @@ def merge(branch1, branch2):
 
     # Charger les trees des deux commits
     def get_tree(sha):
-        path = os.path.join(".fyt", "objects", "commit", sha)
+        path = os.path.join("projet-test", ".fyt", "objects", "commit", sha)
         with open(path, "rb") as f:
             data = json.load(f)
         return data["tree"]
@@ -65,8 +74,8 @@ def merge(branch1, branch2):
     tree2 = get_tree(sha2)
 
     # Fusion simplifiée : on prend tous les fichiers des deux trees (sans gestion de conflit)
-    tree1_path = os.path.join(".fyt", "objects", "tree", tree1)
-    tree2_path = os.path.join(".fyt", "objects", "tree", tree2)
+    tree1_path = os.path.join("projet-test", ".fyt", "objects", "tree", tree1)
+    tree2_path = os.path.join("projet-test", ".fyt", "objects", "tree", tree2)
     with open(tree1_path, "rb") as f:
         files1 = dict(json.load(f)["files"])
     with open(tree2_path, "rb") as f:
@@ -93,12 +102,12 @@ def merge(branch1, branch2):
     commit_json = json.dumps(commit_data).encode()
     commit_hash = hashlib.sha1(commit_json).hexdigest()
 
-    os.makedirs(".fyt/objects/commit", exist_ok=True)
-    with open(f".fyt/objects/commit/{commit_hash}", "wb") as f:
+    os.makedirs(os.path.join("projet-test", ".fyt", "objects", "commit"), exist_ok=True)
+    with open(os.path.join("projet-test", ".fyt", "objects", "commit", commit_hash), "wb") as f:
         f.write(commit_json)
 
     # Mettre à jour la branche cible (branch1)
-    ref_path = os.path.join(".fyt", "refs", "heads", branch1)
+    ref_path = os.path.join("projet-test", ".fyt", "refs", "heads", branch1)
     with open(ref_path, "w") as f:
         f.write(commit_hash)
 

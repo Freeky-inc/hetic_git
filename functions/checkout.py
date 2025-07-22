@@ -43,15 +43,24 @@ def checkout(b, branch_or_sha):
                 f.write(commit_sha)
 
     # Charger le commit
-    commit_path = os.path.join('projet-test/.fyt', 'commits', commit_sha)
+    commit_path = os.path.join('projet-test/.fyt', 'objects', 'commit', commit_sha)
     if not os.path.exists(commit_path):
         print(f"Commit {commit_sha} introuvable.")
         return
     with open(commit_path, 'r') as f:
         commit_data = json.load(f)
 
-    # Restaurer les fichiers du commit avec gestion des conflits
-    for file_path, blob_sha in commit_data.items():
+    # Charger le tree du commit
+    tree_sha = commit_data["tree"]
+    tree_path = os.path.join('projet-test/.fyt', 'objects', 'tree', tree_sha)
+    if not os.path.exists(tree_path):
+        print(f"Tree {tree_sha} introuvable.")
+        return
+    with open(tree_path, 'r') as f:
+        tree_data = json.load(f)
+
+    # Restaurer les fichiers du tree
+    for file_path, blob_sha in tree_data["files"]:
         blob_path = os.path.join('projet-test/.fyt', 'objects', 'blob', blob_sha)
         if not os.path.exists(blob_path):
             print(f"Blob {blob_sha} manquant pour {file_path}.")
@@ -65,7 +74,6 @@ def checkout(b, branch_or_sha):
             if current_content != new_content:
                 print(f"Conflit: {file_path} modifié localement. Non écrasé.")
                 continue
-        # Créer les dossiers si besoin
         os.makedirs(os.path.dirname(file_path), exist_ok=True)
         with open(blob_path, 'rb') as blob_file:
             content = blob_file.read()

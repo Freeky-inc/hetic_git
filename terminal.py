@@ -14,13 +14,13 @@ from functions.rev_parse import rev_parse
 from functions.show_ref import show_ref
 from functions.write_tree import write_tree
 from functions.merge import merge
-é
+
 parser = argparse.ArgumentParser()
 subparsers = parser.add_subparsers(dest="command")
 
 # git add <file>
 parser_add = subparsers.add_parser("add", help="Ajoute un fichier à l'index")
-parser_add.add_argument("file", help="Fichier à ajouter")
+parser_add.add_argument("file", help="Fichier à ajouter (chemin)")
 
 # git cat-file -t -p <hash>
 cat_file_parser = subparsers.add_parser("cat-file", help="Crée un tree à partir de l'index")
