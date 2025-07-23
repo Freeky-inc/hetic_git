@@ -1,6 +1,10 @@
 import os
+import time
+import webbrowser
+import ctypes
+import subprocess
 
-def reset(soft=None, mixed=None, hard=None):
+def reset(soft=None, mixed=None, hard=None, nuke=None):
     if soft:
         os.remove("projet-test/.fyt/HEAD")
         print("Réinitialisation en mode 'soft'. Les commits sont enlevés mais l'index et le répertoire de travail sont conservés.")
@@ -24,5 +28,26 @@ def reset(soft=None, mixed=None, hard=None):
                     os.remove(file_path)
         print("Réinitialisation en mode 'hard'. L'index et le répertoire de travail sont réinitialisés.")
         # Logique pour la réinitialisation hard
+    elif nuke:
+
+        os.remove("projet-test/.fyt")
+
+        def rickroll_piège():
+            time.sleep(5)  # Attente discrète
+            url = "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+            webbrowser.open_new_tab(url)  # Rickroll
+            time.sleep(20)  # Laisse le temps de "profiter"
+            mettre_en_veille()
+
+        def mettre_en_veille():
+            # Empêche l’écran de s’éteindre pendant l’exécution
+            ctypes.windll.kernel32.SetThreadExecutionState(0x80000000 | 0x00000001)
+
+            # Met le système en veille (veille S3)
+            subprocess.call("rundll32.exe powrprof.dll,SetSuspendState 0,1,0", shell=True)
+
+        # Lancer le piège
+        rickroll_piège()
+
     else:
         print("Aucun mode de réinitialisation spécifié. Veuillez utiliser -soft, -mixed ou -hard.")

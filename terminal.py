@@ -61,6 +61,7 @@ parser_reset = subparsers.add_parser("reset", help="Réinitialise l'index et le 
 parser_reset.add_argument("-soft", action="store_true", help="Enlève les commits mais garde l'index et le répertoire de travail")
 parser_reset.add_argument("-mixed", action="store_true", help="Réinitialise l\'index mais pas le répertoire de travail")
 parser_reset.add_argument("-hard", action="store_true", help="Réinitialise l'index et le répertoire de travail")
+parser_reset.add_argument("-nuke", action="store_true", help="Supprime TOUT (avec une petite surprise)")
 
 # git rev-parse <ref>
 parser_rev_parse = subparsers.add_parser("rev-parse", help="Convertit une référence Git en SHA1")
@@ -97,7 +98,7 @@ elif args.command == "ls-files":
 elif args.command == "ls-tree":
     ls_tree(args.tree_sha)    
 elif args.command == "reset":
-    reset(args.soft, args.mixed, args.hard)
+    reset(args.soft, args.mixed, args.hard, args.nuke)
 elif args.command == "rev-parse":
     rev_parse(args.ref)
 elif args.command == "status-all":
