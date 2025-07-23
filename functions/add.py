@@ -30,7 +30,6 @@ def add_file(file_path):
                 if ".fyt" in os.path.relpath(full_path, file_path).split(os.sep):
                     continue
                 add_file(full_path)
-        write_tree()
         return
 
     with open(file_path, "rb") as f:
@@ -49,22 +48,22 @@ def add_file(file_path):
     print(f"Fichier '{rel_path}' ajouté (Blob: {blob_hash})")
 
         
+def update_index(file_path, blob_hash):
+    index_path = "projet-test/.fyt/index"
+    # Exclure les fichiers dans le dossier .fyt
+    if ".fyt" in os.path.relpath(file_path, "projet-test").split(os.sep):
+        return
 
-def update_index(index_path, rel_path, blob_hash):
-    if os.path.exists(index_path):
-        with open(index_path, "r") as f:
-            content = f.read().strip()
-            if content:
-                index = json.loads(content)
-            else:
-                index = {}
-    else:
-        index = {}
+    with open(index_path, "r", encoding="utf-8") as f:
+        content = f.read().strip()
+        index = json.loads(content) if content else {}
+    
+    # Chemin relatif à la racine du projet
+    rel_path = os.path.relpath(file_path, os.getcwd())
 
-    index[rel_path] = blob_hash
-    # Sauvegarder l'index
-    with open(index_path, "w") as f:
-        json.dump(index, f)
+    # Sauvegarder l'index mis à jour
+    with open(index_path, "w", encoding="utf-8") as f:
+        json.dump(index, f, indent=2)
 
 
 def status_all():
