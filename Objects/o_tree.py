@@ -22,22 +22,27 @@ class Tree:
             if parts[:len(root_parts)] != root_parts:
                 continue
 
+            # On calcule le chemin relatif au dossier "root"
+            relative_to_root = os.path.join(*parts[len(root_parts):])
+
             # Fichier direct dans le dossier courant
             if len(parts) == len(root_parts) + 1:
                 mode = os.stat(rel_path).st_mode
                 octal_mode = oct(stat.S_IFMT(mode) | stat.S_IMODE(mode)).replace("0o", "").zfill(6)
-                tree_data += f"{octal_mode} {rel_path} {blob_hash}\n"
-                files.append([rel_path, blob_hash])
+                tree_data += f"{octal_mode} {relative_to_root} {blob_hash}\n"
+                files.append([relative_to_root, blob_hash])
 
             # Sous-dossier
             elif len(parts) > len(root_parts) + 1:
                 subdir = os.path.join(*parts[:len(root_parts)+1])
+                relative_subdir = os.path.join(*parts[len(root_parts):len(root_parts)+1])
+
                 if subdir not in subtrees_done:
                     subtree = Tree()
                     subtree.setTree(subdir)
                     mode = "040000"
-                    tree_data += f"{mode} {subdir} {subtree.sha1}\n"
-                    files.append([subdir, subtree.sha1])
+                    tree_data += f"{mode} {relative_subdir} {subtree.sha1}\n"
+                    files.append([relative_subdir, subtree.sha1])
                     subtrees_done.add(subdir)
 
         # SHA du contenu

@@ -1,10 +1,5 @@
 import os
 
-def exec_ext(nom_fichier):
-    extensions_exec = {'.exe', '.bat', '.cmd', '.sh', '.bin', '.py', '.pl', '.rb', '.jar'}
-    _, ext = os.path.splitext(nom_fichier.lower())
-    return ext in extensions_exec
-
 def cat_file(show_type: bool, pretty: bool, hash_id: str):
     base = "projet-test/.fyt/objects"
     dirs = {
@@ -45,22 +40,16 @@ def cat_file(show_type: bool, pretty: bool, hash_id: str):
             NAME_COL = 60
 
             for line in lines:
-                # chaque ligne est du type : "100644 chemin hash"
                 parts = line.strip().split()
                 if len(parts) < 3:
                     continue
-                mode, chemin, entry_hash = parts
-                name = os.path.basename(chemin)
 
-                if os.path.isfile(os.path.join(dirs['tree'], entry_hash)):
-                    mode = "040000"
-                    typ = "tree"
-                else:
-                    typ = "blob"
-                    mode = "100755" if exec_ext(chemin) else "100644"
+                mode, chemin, entry_hash = parts
+                typ = "tree" if mode == "040000" else "blob"
 
                 prefix = f"{mode} {typ} {entry_hash}"
                 padding = max(1, NAME_COL - len(prefix))
+                name = os.path.basename(chemin)
                 print(f"{prefix}{' ' * padding}{name}")
 
         elif obj_type == 'commit':
