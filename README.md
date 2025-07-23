@@ -1,3 +1,6 @@
+Il faut revoir la commande de commit
+
+
 # Git from Scratch – Student Project
 
 This project involves reimplementing core Git functionality in Python. It will help you understand Git's internal architecture and make you comfortable with both its plumbing and porcelain commands.
