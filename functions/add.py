@@ -44,7 +44,8 @@ def add_file(file_path):
     with open(blob_path, "wb") as f:
         f.write(content)
 
-    update_index(index_path, rel_path, blob_hash)
+    print(f"Fichier '{rel_path}' ajouté (Blob: {blob_hash})")
+    update_index(file_path, blob_hash)
     print(f"Fichier '{rel_path}' ajouté (Blob: {blob_hash})")
 
         
@@ -60,6 +61,7 @@ def update_index(file_path, blob_hash):
     
     # Chemin relatif à la racine du projet
     rel_path = os.path.relpath(file_path, os.getcwd())
+    index[rel_path] = blob_hash
 
     # Sauvegarder l'index mis à jour
     with open(index_path, "w", encoding="utf-8") as f:
