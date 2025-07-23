@@ -4,6 +4,17 @@ import hashlib
 
 from functions.write_tree import write_tree
 
+def find_project_root(start_path):
+    """Remonte les dossiers jusqu'à trouver le dossier contenant .fyt"""
+    current = os.path.abspath(start_path)
+    while True:
+        if os.path.isdir(os.path.join(current, ".fyt")):
+            return current
+        parent = os.path.dirname(current)
+        if parent == current:
+            raise FileNotFoundError("Impossible de trouver le dossier racine du projet (.fyt)")
+        current = parent
+
 def add_file(file_path):
     if os.path.isdir(file_path):
         for root, dirs, files in os.walk(file_path):
