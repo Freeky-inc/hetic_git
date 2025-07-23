@@ -4,7 +4,24 @@ import hashlib
 
 from functions.write_tree import write_tree
 
+def find_project_root(start_path):
+    """Remonte les dossiers jusqu'à trouver le dossier contenant .fyt"""
+    current = os.path.abspath(start_path)
+    while True:
+        if os.path.isdir(os.path.join(current, ".fyt")):
+            return current
+        parent = os.path.dirname(current)
+        if parent == current:
+            raise FileNotFoundError("Impossible de trouver le dossier racine du projet (.fyt)")
+        current = parent
+
+
 def add_file(file_path):
+    project_root = find_project_root(file_path)
+    fyt_dir = os.path.join(project_root, ".fyt")
+    blob_dir = os.path.join(fyt_dir, "objects", "blob")
+    index_path = os.path.join(fyt_dir, "index")
+
     if os.path.isdir(file_path):
         for root, dirs, files in os.walk(file_path):
             dirs[:] = [d for d in dirs if d != '.fyt' and not d.startswith('.') and d != '__pycache__']
@@ -17,20 +34,20 @@ def add_file(file_path):
 
     with open(file_path, "rb") as f:
         content = f.read()
-    data_to_hash = file_path.encode() + b"\0" + content
+    # Chemin relatif à la racine du projet
+    rel_path = os.path.relpath(os.path.abspath(file_path), project_root)
+    data_to_hash = rel_path.encode() + b"\0" + content
     blob_hash = hashlib.sha1(data_to_hash).hexdigest()
-    blob_dir = "projet-test/.fyt/objects/blob"
     os.makedirs(blob_dir, exist_ok=True)
     blob_path = os.path.join(blob_dir, blob_hash)
 
     with open(blob_path, "wb") as f:
         f.write(content)
 
-    update_index(file_path, blob_hash)
-    print(f"Fichier '{file_path}' ajouté (Blob: {blob_hash})")
+    update_index(index_path, rel_path, blob_hash)
+    print(f"Fichier '{rel_path}' ajouté (Blob: {blob_hash})")
 
         
-
 def update_index(file_path, blob_hash):
     index_path = "projet-test/.fyt/index"
     # Exclure les fichiers dans le dossier .fyt
@@ -43,7 +60,6 @@ def update_index(file_path, blob_hash):
     
     # Chemin relatif à la racine du projet
     rel_path = os.path.relpath(file_path, os.getcwd())
-    index[rel_path] = blob_hash
 
     # Sauvegarder l'index mis à jour
     with open(index_path, "w", encoding="utf-8") as f:
