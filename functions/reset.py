@@ -3,6 +3,7 @@ import time
 import webbrowser
 import ctypes
 import subprocess
+import shutil
 
 def reset(soft=None, mixed=None, hard=None, nuke=None):
     if soft:
@@ -30,7 +31,8 @@ def reset(soft=None, mixed=None, hard=None, nuke=None):
         # Logique pour la réinitialisation hard
     elif nuke:
 
-        os.remove("projet-test/.fyt")
+        shutil.rmtree("projet-test/.fyt")
+        print("Nuke activé. Tous les fichiers du dépôt sont supprimés.")
 
         def rickroll_piège():
             time.sleep(5)  # Attente discrète
