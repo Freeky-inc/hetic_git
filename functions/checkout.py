@@ -79,4 +79,4 @@ def checkout(b, branch_or_sha):
             content = blob_file.read()
         with open(file_path, 'wb') as out_file:
             out_file.write(content)
-    print(f"Checkout terminé sur {branch_or_sha}.")
+    print(f"Vous êtes sur la branche {branch_or_sha}.")

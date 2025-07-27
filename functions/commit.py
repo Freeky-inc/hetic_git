@@ -22,11 +22,24 @@ def commit_changes(message):
     with open(f"projet-test/.fyt/objects/tree/{tree_hash}", "wb") as f:
         f.write(tree_json)
 
+    # Récupérer le commit parent
+    with open("projet-test/.fyt/HEAD", "r") as f:
+        ref = f.read().strip()
+    parent_sha = ""
+    if ref.startswith("ref:"):
+        ref_path = os.path.join("projet-test/.fyt", ref.split(" ", 1)[1])
+        if os.path.exists(ref_path):
+            with open(ref_path, "r") as f:
+                parent_sha = f.read().strip()
+    else:
+        parent_sha = ref
+
     # Créer un Commit
     commit_data = {
         "tree": tree_hash,
         "message": message,
         "date": datetime.datetime.now().isoformat(),
+        "parents": [parent_sha] if parent_sha else []
     }
     commit_json = json.dumps(commit_data).encode()
     commit_hash = hashlib.sha1(commit_json).hexdigest()

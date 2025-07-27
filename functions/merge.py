@@ -81,8 +81,38 @@ def merge(branch1, branch2):
     with open(tree2_path, "rb") as f:
         files2 = dict(json.load(f)["files"])
 
-    merged_files = files1.copy()
-    merged_files.update(files2)  # Les fichiers de branch2 écrasent ceux de branch1 en cas de conflit
+    merged_files = {}
+    all_files = set(files1.keys()) | set(files2.keys())
+    for file_path in all_files:
+        blob1 = files1.get(file_path)
+        blob2 = files2.get(file_path)
+        if blob1 and blob2:
+            # Les deux branches ont le fichier, vérifier le contenu
+            blob1_path = os.path.join("projet-test", ".fyt", "objects", "blob", blob1)
+            blob2_path = os.path.join("projet-test", ".fyt", "objects", "blob", blob2)
+            with open(blob1_path, "rb") as f1, open(blob2_path, "rb") as f2:
+                content1 = f1.read()
+                content2 = f2.read()
+            if content1 != content2:
+                # Conflit, créer un nouveau blob avec les marqueurs
+                conflict_content = (
+                    f"<<<<<<< {branch1}\n".encode() +
+                    content1 +
+                    b"\n=======\n" +
+                    content2 +
+                    f"\n>>>>>>> {branch2}\n".encode()
+                )
+                conflict_blob_hash = hashlib.sha1(conflict_content).hexdigest()
+                conflict_blob_path = os.path.join("projet-test", ".fyt", "objects", "blob", conflict_blob_hash)
+                with open(conflict_blob_path, "wb") as f:
+                    f.write(conflict_content)
+                merged_files[file_path] = conflict_blob_hash
+            else:
+                merged_files[file_path] = blob1  # Pas de conflit, contenu identique
+        elif blob1:
+            merged_files[file_path] = blob1
+        elif blob2:
+            merged_files[file_path] = blob2
 
     merged_tree_data = {"files": list(merged_files.items())}
     merged_tree_json = json.dumps(merged_tree_data).encode()
