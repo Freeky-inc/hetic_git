@@ -1,40 +1,49 @@
-# Projet Terminal
+# Fyt – A Git-Like Version Control System in Python
 
-## Lancement du projet
+## About
 
-Pour lancer le projet, exécutez la commande suivante :
+**Fyt** is a lightweight Git reimplementation written entirely in Python.  
+It allows developers to manage version control for their projects using familiar Git concepts, while providing a simplified and educational environment.  
+Fyt was designed to help understand the inner workings of Git and to experiment with version control operations in Python.
+
+---
+
+## 🚀 Project Launch
+
+To start the project, simply run:
 
 ```bash
 python terminal.py
+Once the terminal is running, you can use Fyt commands just like you would with Git to manage your project’s version control.
 ```
+## Example
 
-Puis utilisez les commandes Git habituelles pour gérer le versionnement du projet.
+Copy this code :
 
-### Exemple
 ```bash
 python terminal.py add
 ```
----
 
-## Répartition du travail
+## 👥 Team Workflow
+Task distribution within the team was organized using GitHub Issues.
+Each member was assigned a specific issue representing a well-defined task.
 
-La répartition des tâches au sein du groupe s'est faite via le système des *Issues* de GitHub.  
-Chaque membre s'est vu assigner une tâche spécifique à partir d'une issue.
+Once a task was completed, the contributor would open a Pull Request (PR).
+A different team member (not the PR author) was responsible for reviewing it to ensure code quality and consistency.
 
-Lorsqu'une tâche était terminée, elle faisait l'objet d'une *Pull Request* (PR).  
-Un autre membre du groupe (autre que le créateur de la PR) avait la responsabilité de :
+The reviewer could then:
 
-- Vérifier le contenu de la PR
-- Soit valider la PR si tout était conforme
-- Soit demander des modifications si nécessaire
+-Approve the PR if everything was correct
 
-Ce fonctionnement a permis un suivi clair, une validation croisée du travail, et une meilleure qualité de code.
+-Request changes if improvements or fixes were needed
 
----
+This workflow ensured clear task tracking, peer validation, and high-quality code integration.
 
-## Bonnes pratiques utilisées
+## 🧩 Best Practices Followed
+One branch per feature — isolated development to prevent merge conflicts
 
-- Une branche par fonctionnalité
-- Revue de code systématique
-- Communication centralisée via les Issues
-- Intégration progressive par PR validée
+-Systematic code reviews — mandatory peer validation for every PR
+
+-Centralized communication — all discussions and progress tracked via GitHub Issues
+
+-Progressive integration — features merged only after successful review and validation
